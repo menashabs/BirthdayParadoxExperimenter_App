@@ -13,6 +13,7 @@ Note:
 * Run the experiment and observe the theoretical and simulated probabilities of shared birthdays.
 * View the results and explore the birthday probability curve.
 * Change the input values and repeat the experiment to explore different scenarios.
+* Users can input their own birthday and experiment the paradox.
 
 Limitations:
 

@@ -350,6 +350,7 @@ ui <- fluidPage(
       )
     )
   ),
+  
   # --- Explanation and Results ---
   fluidRow(
     column(
@@ -360,6 +361,46 @@ ui <- fluidPage(
           class = "section-heading"
         ),
         verbatimTextOutput("summary")
+      )
+    )
+  ),
+  
+  # --- Experimenting for a birthday ---
+  hr(),
+  h2("My Birthday Probability"),
+  p("Enter your birthday and the group size to explore 
+  the probability of someone sharing your birthday."),
+  fluidRow(
+    column(
+      width = 6,
+      dateInput(
+        inputId = "my_birthday",
+        label = "Select your birthday:",
+        value = "2010-10-10",
+        format = "MM dd"
+      ),
+      numericInput(
+        inputId = "my_group_size",
+        label = "Number of people in the group (including you):",
+        value = 23,
+        min = 2,
+        max = 500
+      ),
+      actionButton(
+        inputId = "check_my_birthday",
+        label = "Check Probability",
+        class = "btn-primary"
+      )
+    ),
+    column(
+      width = 6,
+      h4("Your Results"),
+      wellPanel(
+        h4("Your Birthday Probability"),
+        textOutput("my_birthday_result"),
+        hr(),
+        h4("Birthday Paradox Probability"),
+        textOutput("general_birthday_result")
       )
     )
   ),
@@ -611,6 +652,27 @@ server <- function(input, output, session) {
       ),
       " percentage points"
     )
+  })
+  
+  # Experimenting for a birthday
+  observeEvent(input$check_my_birthday, {
+    req(input$my_birthday, input$my_group_size)
+    n <- input$my_group_size
+    # Probability that at least one other person shares the selected birthday
+    my_probability <- 1 - (364 / 365)^(n - 1)
+    # Probability that any two people share a birthday
+    general_probability <- birthday_probability(n)
+    # Display results
+    output$my_birthday_result <- renderText({
+      paste0(
+        format(input$my_birthday, "%B %d"),
+        ": ",
+        sprintf("%.2f%%", my_probability * 100)
+      )
+    })
+    output$general_birthday_result <- renderText({
+      sprintf("%.2f%%", general_probability * 100)
+    })
   })
 }
 
